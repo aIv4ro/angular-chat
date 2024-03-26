@@ -1,0 +1,37 @@
+# front-angular/out-tsc
+# front-angular/bazel-out
+# npm-debug.log
+# yarn-error.log
+# .idea/
+# .project
+# .classpath
+# .c9/
+# *.launch
+# .settings/
+# *.sublime-workspace
+# .vscode/*
+# !.vscode/settings.json
+# !.vscode/tasks.json
+# !.vscode/launch.json
+# !.vscode/extensions.json
+# .history/*
+# /.angular/cache
+# .sass-cache/
+# /connect.lock
+# /coverage
+# /libpeerconnection.log
+# testem.log
+# /typings
+# .DS_Store
+# Thumbs.db
+
+.vscode
+
+server-node/node_modules
+server-node/build
+
+front-angular/node_modules
+front-angular/dist
+front-angular/tmp
+front-angular/.vscode
+front-angular/.angular
