@@ -1,5 +1,6 @@
 import { createServer } from 'http'
-import { Server, Socket } from 'socket.io'
+import { Server } from 'socket.io'
+import { UserData, deleteId, getInMemoUsers, printInMemoUsers, registerId, setUserData } from './services/users'
 
 const port = process.env.PORT ?? 8080
 
@@ -12,37 +13,6 @@ const io = new Server(server, {
   }
 })
 
-interface User {
-  id: string
-  data: {} | null
-  socket: Socket
-}
-
-const inMemoUsers: User[] = []
-
-const registerId = ({ id, socket }: { id: string, socket: Socket }): void => {
-  const user = { id, socket, data: null }
-  inMemoUsers.push(user)
-}
-
-const deleteId = (id: string): void => {
-  const index = inMemoUsers.findIndex((user) => user.id === id)
-  if (index !== -1) {
-    inMemoUsers.splice(index, 1)
-  }
-}
-
-const setUserData = ({ id, data }: { id: string, data: {} }): void => {
-  const index = inMemoUsers.findIndex((user) => user.id === id)
-  if (index !== -1) {
-    inMemoUsers[index].data = data
-  }
-}
-
-const printInMemoUsers = (): void => {
-  console.log('inMemoUsers ->', inMemoUsers.map((user) => user.id))
-}
-
 io.on('connection', (socket) => {
   console.log('connect -> socket.id ->', socket.id)
   registerId({ id: socket.id, socket })
@@ -50,15 +20,34 @@ io.on('connection', (socket) => {
 
   socket.on('disconnect', () => {
     console.log('disconnect -> socket.id ->', socket.id)
-    deleteId(socket.id)
-    printInMemoUsers()
+    const user = getInMemoUsers().find((user) => user.id === socket.id)
+    if (user != null) {
+      deleteId(socket.id)
+      printInMemoUsers()
+      const { data } = user
+      if (data != null) {
+        getInMemoUsers()
+          .forEach(({ socket }) => {
+            socket.emit('message', {
+              from: 'server',
+              message: `${data.username} has left the chat!`
+            })
+          })
+      }
+    }
   })
 
-  socket.on('join', data => {
+  socket.on('join', (data: UserData) => {
     console.log('join -> data ->', data)
     setUserData({ id: socket.id, data })
-    socket.emit('joined', '')
-    printInMemoUsers()
+    socket.emit('joined')
+    getInMemoUsers()
+      .forEach(({ socket }) => {
+        socket.emit('message', {
+          from: 'server',
+          message: `${data.username} has joined the chat!`
+        })
+      })
   })
 })
 

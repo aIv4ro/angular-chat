@@ -1,8 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { ServerConnectionState, SocketService } from './services/socket.service';
+import { Message, ServerConnectionState, SocketService } from './services/socket.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { Subject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-root',
@@ -11,8 +12,11 @@ import { FormsModule } from '@angular/forms';
   templateUrl: './app.component.html',
   styles: `textarea {field-sizing: content;}`
 })
-export class AppComponent implements OnInit {
+export class AppComponent implements OnInit, OnDestroy {
+  private readonly ngUnsubscribe = new Subject<void>();
+
   connectionState: ServerConnectionState = 'disconnected';
+  messages: Message[] = [];
   message: string = '';
   username: string = '';
 
@@ -21,11 +25,26 @@ export class AppComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.socketService.connectionState.subscribe({
-      next: value => {
-        this.connectionState = value;
-      }
-    })
+    this.socketService.connectionState  
+      .pipe(takeUntil(this.ngUnsubscribe))
+      .subscribe({
+        next: value => {
+          this.connectionState = value;
+        }
+      })
+
+    this.socketService.messages
+      .pipe(takeUntil(this.ngUnsubscribe))
+      .subscribe({
+        next: value => {
+          this.messages = value;
+        }
+      })
+  }
+
+  ngOnDestroy() {
+    this.ngUnsubscribe.next();
+    this.ngUnsubscribe.complete();
   }
 
   connect() {
