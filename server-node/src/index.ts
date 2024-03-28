@@ -1,6 +1,7 @@
 import { createServer } from 'http'
 import { Server } from 'socket.io'
 import { UserData, deleteId, getInMemoUsers, printInMemoUsers, registerId, setUserData } from './services/users'
+import { Message, addMessage, getInMemoMessages, printInMemoMessages } from './services/messages'
 
 const port = process.env.PORT ?? 8080
 
@@ -26,12 +27,15 @@ io.on('connection', (socket) => {
       printInMemoUsers()
       const { data } = user
       if (data != null) {
+        const leaveMessage: Message = {
+          from: 'server',
+          text: `${data?.username} has left the chat!`
+        }
+        addMessage(leaveMessage)
+        printInMemoMessages()
         getInMemoUsers()
           .forEach(({ socket }) => {
-            socket.emit('message', {
-              from: 'server',
-              message: `${data.username} has left the chat!`
-            })
+            socket.emit('message', leaveMessage)
           })
       }
     }
@@ -41,13 +45,35 @@ io.on('connection', (socket) => {
     console.log('join -> data ->', data)
     setUserData({ id: socket.id, data })
     socket.emit('joined')
+    const joinMessage: Message = {
+      from: 'server',
+      text: `${data.username} has joined the chat!`
+    }
+    addMessage(joinMessage)
+    printInMemoMessages()
+    socket.emit('old-messages', getInMemoMessages())
     getInMemoUsers()
+      .filter((user) => user.id !== socket.id)
       .forEach(({ socket }) => {
-        socket.emit('message', {
-          from: 'server',
-          message: `${data.username} has joined the chat!`
-        })
+        socket.emit('message', joinMessage)
       })
+  })
+
+  socket.on('message', (text: string) => {
+    console.log('message -> text ->', text)
+    const user = getInMemoUsers().find((user) => user.id === socket.id)
+    if (user != null) {
+      const message: Message = {
+        from: user.id,
+        text
+      }
+      addMessage(message)
+      printInMemoMessages()
+      getInMemoUsers()
+        .forEach(({ socket }) => {
+          socket.emit('message', message)
+        })
+    }
   })
 })
 

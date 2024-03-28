@@ -1,0 +1,9 @@
+<div
+  [ngClass]="{
+    'flex justify-center': message.from === 'server'
+  }"
+>
+  <p [ngClass]="{
+    'text-center bg-neutral-500 w-fit px-2 text-sm rounded': message.from === 'server'
+  }">{{ message.text }}</p>
+</div>

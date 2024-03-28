@@ -4,11 +4,12 @@ import { Message, ServerConnectionState, SocketService } from './services/socket
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Subject, takeUntil } from 'rxjs';
+import { MessageComponent } from './components/message/message.component';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, CommonModule, FormsModule],
+  imports: [RouterOutlet, CommonModule, FormsModule, MessageComponent],
   templateUrl: './app.component.html',
   styles: `textarea {field-sizing: content;}`
 })
@@ -37,7 +38,8 @@ export class AppComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.ngUnsubscribe))
       .subscribe({
         next: value => {
-          this.messages = value;
+          console.log('new messages', value)
+          this.messages = [...value];
         }
       })
   }
@@ -53,5 +55,10 @@ export class AppComponent implements OnInit, OnDestroy {
 
   disconnect() {
     this.socketService.disconnect();
+  }
+
+  sendMessage() {
+    this.socketService.sendMessage(this.message);
+    this.message = '';
   }
 }

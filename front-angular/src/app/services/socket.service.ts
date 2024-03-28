@@ -5,8 +5,8 @@ import { BehaviorSubject, Observable, filter, take } from 'rxjs';
 export type ServerConnectionState = 'inital-connection' | 'connected' | 'disconnected';
 export type ConnectionState = 'connected' | 'disconnected';
 export type Message = {
-  from: 'string';
-  message: 'string'
+  from: string
+  text: string
 }
 
 
@@ -33,8 +33,9 @@ export class SocketService {
       console.log('joined')
       this.connectionState.next('connected');
     })
-    this.socket.on('old-messages', (messages: string[]) => {
+    this.socket.on('old-messages', (messages: Message[]) => {
       console.log(messages)
+      this.messages.next(messages)
     })
     this.socket.on('message', (message: Message) => {
       console.log('new message', message)
@@ -69,5 +70,9 @@ export class SocketService {
     if (this.socket.connected) {
       this.socket.disconnect();
     }
+  }
+
+  sendMessage(message: string) {
+    this.socket.emit('message', message);
   }
 }
