@@ -64,7 +64,7 @@ io.on('connection', (socket) => {
     const user = getInMemoUsers().find((user) => user.id === socket.id)
     if (user != null) {
       const message: Message = {
-        from: user.id,
+        from: user.data?.username ?? user.id,
         text
       }
       addMessage(message)

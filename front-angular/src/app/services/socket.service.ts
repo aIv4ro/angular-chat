@@ -17,6 +17,7 @@ export class SocketService {
   private readonly socket: Socket
   readonly connectionState = new BehaviorSubject<ServerConnectionState>('disconnected');
   readonly messages = new BehaviorSubject<Message[]>([]);
+  readonly username = new BehaviorSubject<string | null>(null);
 
   constructor() { 
     this.socket = io("ws://localhost:8080/", { autoConnect: false, });
@@ -46,6 +47,7 @@ export class SocketService {
   private resetState() {
     this.connectionState.next('disconnected');
     this.messages.next([]);
+    this.username.next(null);
   }
 
   connect({
@@ -61,6 +63,7 @@ export class SocketService {
         ).subscribe(() => {
           console.log('joining')
           this.socket.emit('join', { username });
+          this.username.next(username)
         })
       this.socket.connect();
     }

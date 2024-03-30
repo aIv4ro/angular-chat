@@ -1,9 +1,34 @@
 <div
+  class="flex"
   [ngClass]="{
-    'flex justify-center': message.from === 'server'
+    'justify-center': message.from === 'server',
+    'justify-end': message.from === username
   }"
 >
-  <p [ngClass]="{
-    'text-center bg-neutral-500 w-fit px-2 text-sm rounded': message.from === 'server'
-  }">{{ message.text }}</p>
+  <div class="flex">
+    @if (message.from !== username && message.from !== 'server') {
+      <app-tail dir="in"></app-tail>
+    }
+    <div
+      class="px-2 rounded w-fit flex flex-col"
+      [ngClass]="{
+        'bg-neutral-800 text-white': message.from !== 'server',
+        'bg-neutral-500': message.from === 'server',
+        'rounded-tr-none': message.from === username,
+        'rounded-tl-none': message.from !== username && message.from !== 'server',
+      }"
+    >
+      @if (message.from !== 'server' && message.from !== username) {
+        <p class="text-[#00cb79]">
+          {{ message.from }}
+        </p>
+      }
+      <p>
+        {{ message.text }}
+      </p>
+    </div>
+    @if (message.from === username) {
+      <app-tail dir="out"></app-tail>
+    }
+  </div>
 </div>
