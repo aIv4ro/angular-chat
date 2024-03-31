@@ -5,7 +5,15 @@ export interface Message {
 
 const inMemoMessages: Message[] = []
 
-export const getInMemoMessages = (): Message[] => inMemoMessages
+export const getInMemoMessages = ({
+  limit
+}: {
+  limit: number
+} = {
+  limit: 10
+}): Message[] => {
+  return inMemoMessages.slice(-limit)
+}
 
 export const addMessage = (message: Message): void => {
   inMemoMessages.push(message)

@@ -36,7 +36,6 @@ export class SocketService {
       console.log('disconnected')
       this.socket.disconnect()
       this.resetState()
-      this.localStorageService.setConnection(null)
     });
     this.socket.on('joined', () => {
       console.log('joined')
@@ -81,12 +80,13 @@ export class SocketService {
           this.socket.emit('join', { username });
           this.username.next(username)
         })
-      this.socket.connect();
+      this.socket.connect(); 
     }
   }
 
   disconnect() {
     if (this.socket.connected) {
+      this.localStorageService.setConnection(null)
       this.socket.disconnect();
     }
   }
