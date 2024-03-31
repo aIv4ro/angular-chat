@@ -1,6 +1,7 @@
 import { Injectable, OnDestroy, OnInit } from '@angular/core';
 import {Socket, io} from 'socket.io-client';
 import { BehaviorSubject, Observable, filter, take } from 'rxjs';
+import { LocalStorageService } from './local-storage.service';
 
 export type ServerConnectionState = 'inital-connection' | 'connected' | 'disconnected';
 export type ConnectionState = 'connected' | 'disconnected';
@@ -8,7 +9,6 @@ export type Message = {
   from: string
   text: string
 }
-
 
 @Injectable({
   providedIn: 'root'
@@ -19,8 +19,15 @@ export class SocketService {
   readonly messages = new BehaviorSubject<Message[]>([]);
   readonly username = new BehaviorSubject<string | null>(null);
 
-  constructor() { 
+  constructor(
+    private readonly localStorageService: LocalStorageService
+  ) { 
     this.socket = io("ws://localhost:8080/", { autoConnect: false, });
+    this.listenEvents()
+    this.init()
+  }
+
+  private listenEvents() {
     this.socket.on('connect', () => {
       console.log('initial connection')
       this.connectionState.next('inital-connection');
@@ -29,10 +36,12 @@ export class SocketService {
       console.log('disconnected')
       this.socket.disconnect()
       this.resetState()
+      this.localStorageService.setConnection(null)
     });
     this.socket.on('joined', () => {
       console.log('joined')
       this.connectionState.next('connected');
+      this.localStorageService.setConnection({ username: this.username.value! })
     })
     this.socket.on('old-messages', (messages: Message[]) => {
       console.log(messages)
@@ -42,6 +51,13 @@ export class SocketService {
       console.log('new message', message)
       this.messages.next([...this.messages.value, message])
     })
+  }
+
+  private init () {
+    const connection = this.localStorageService.getConnection();
+    if (connection != null) {
+      this.connect(connection)
+    }
   }
 
   private resetState() {

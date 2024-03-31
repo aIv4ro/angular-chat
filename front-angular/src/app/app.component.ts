@@ -5,6 +5,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Subject, takeUntil } from 'rxjs';
 import { MessageComponent } from './components/message/message.component';
+import { LocalStorageService } from './services/local-storage.service';
 
 @Component({
   selector: 'app-root',
@@ -23,7 +24,10 @@ export class AppComponent implements OnInit, OnDestroy {
 
   constructor(  
     private readonly socketService: SocketService,
-  ) {}
+    private readonly localStorageService: LocalStorageService
+  ) {
+    this.username = this.localStorageService.getConnection()?.username ?? '';
+  }
 
   ngOnInit() {
     this.socketService.connectionState  
@@ -33,7 +37,6 @@ export class AppComponent implements OnInit, OnDestroy {
           this.connectionState = value;
         }
       })
-
     this.socketService.messages
       .pipe(takeUntil(this.ngUnsubscribe))
       .subscribe({
