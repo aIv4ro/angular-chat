@@ -1,11 +1,11 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { Message, ServerConnectionState, SocketService } from './services/socket.service';
+import { Message, ServerConnectionState, SocketService } from '../../services/socket.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Subject, combineLatest, takeUntil } from 'rxjs';
-import { MessageComponent } from './components/message/message.component';
-import { LocalStorageService } from './services/local-storage.service';
+import { MessageComponent } from '../message/message.component';
+import { LocalStorageService } from '../../services/local-storage.service';
 
 @Component({
   selector: 'app-root',
