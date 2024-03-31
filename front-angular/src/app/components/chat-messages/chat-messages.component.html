@@ -1,20 +1,16 @@
-<div class="flex-1 bg-neutral-700 rounded-sm overflow-auto">
-  @if (connectionState === 'disconnected') {
-    <p class="text-center">Connect to see the chat</p>
-  } @else if (connectionState === 'inital-connection') {
-    <p class="text-center">Joining to the chat</p>
+@if (connectionState === 'disconnected') {
+  <p class="text-center">Connect to see the chat</p>
+} @else if (connectionState === 'inital-connection') {
+  <p class="text-center">Joining to the chat</p>
+} @else {
+  @if (messages.length === 0) {
+    <p class="text-center">No messages yet</p>
   } @else {
-    @if (messages.length === 0) {
-      <p class="text-center">No messages yet</p>
-    } @else {
-      <div class="flex flex-col gap-2 p-2">
-        @for (message of messages; track $index) {
-          <app-message
-            class="block"
-            [message]="message"
-          />
-        }
-      </div>
+    @for (message of messages; track $index) {
+      <app-message
+        class="block"
+        [message]="message"
+      />
     }
   }
-</div>
+}
