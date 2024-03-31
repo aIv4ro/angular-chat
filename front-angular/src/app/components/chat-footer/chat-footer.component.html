@@ -1,0 +1,19 @@
+<form (submit)="sendMessage()">
+  <div class="flex bg-neutral-700 p-2 gap-2">
+    <textarea  
+      [(ngModel)]="message" 
+      name="message" 
+      placeholder="Type your message here"
+      class="resize-none w-full max-h-20 p-2 rounded bg-neutral-700 focus:outline-none border border-neutral-800"
+      required
+      #messageInput="ngModel"
+    >
+    </textarea>
+    <button 
+      class="bg-neutral-800 rounded max-h-full hover:text-blue-700 rounded-r-sm transition-colors p-2 disabled:pointer-events-none disabled:text-gray-500"
+      [disabled]="connectionState !== 'connected' || messageInput.invalid"
+    >
+      <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-send-2"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4.698 4.034l16.302 7.966l-16.302 7.966a.503 .503 0 0 1 -.546 -.124a.555 .555 0 0 1 -.12 -.568l2.468 -7.274l-2.468 -7.274a.555 .555 0 0 1 .12 -.568a.503 .503 0 0 1 .546 -.124z" /><path d="M6.5 12h14.5" /></svg>
+    </button>
+  </div>
+</form>
