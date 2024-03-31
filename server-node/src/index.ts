@@ -16,39 +16,15 @@ const io = new Server(server, {
 
 io.on('connection', (socket) => {
   console.log('connect -> socket.id ->', socket.id)
-  const data = socket.handshake.auth as UserData | null
-  if (data == null) {
-    socket.disconnect()
-    return
-  } else {
-    register({ id: socket.id, socket, data })
-    const joinMessage: Message = { from: 'server', text: `${data.username} has joined the chat!` }
-    addMessage(joinMessage)
-    socket.emit('old-messages', getInMemoMessages())
-    getInMemoUsers()
-      .filter((user) => user.id !== socket.id)
-      .forEach(({ socket }) => {
-        socket.emit('message', joinMessage)
-      })
-  }
+  const data = socket.handshake.auth as UserData
+  register({ id: socket.id, socket, data })
+  socket.emit('old-messages', getInMemoMessages())
 
   socket.on('disconnect', () => {
     console.log('disconnect -> socket.id ->', socket.id)
     const user = getInMemoUsers().find((user) => user.id === socket.id)
     if (user != null) {
       deleteId(socket.id)
-      const { data } = user
-      if (data != null) {
-        const leaveMessage: Message = {
-          from: 'server',
-          text: `${data?.username} has left the chat!`
-        }
-        addMessage(leaveMessage)
-        getInMemoUsers()
-          .forEach(({ socket }) => {
-            socket.emit('message', leaveMessage)
-          })
-      }
     }
   })
 
@@ -56,10 +32,7 @@ io.on('connection', (socket) => {
     console.log('message -> text ->', text)
     const user = getInMemoUsers().find((user) => user.id === socket.id)
     if (user != null) {
-      const message: Message = {
-        from: user.data?.username ?? user.id,
-        text
-      }
+      const message: Message = { from: user.data.username, text }
       addMessage(message)
       getInMemoUsers()
         .forEach(({ socket }) => {

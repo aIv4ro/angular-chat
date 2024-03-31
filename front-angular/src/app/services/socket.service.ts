@@ -1,6 +1,6 @@
 import { Injectable, OnDestroy, OnInit } from '@angular/core';
 import {Socket, io} from 'socket.io-client';
-import { BehaviorSubject, Observable, filter, take } from 'rxjs';
+import { BehaviorSubject } from 'rxjs';
 import { LocalStorageService } from './local-storage.service';
 
 export type ServerConnectionState = 'inital-connection' | 'connected' | 'disconnected';
