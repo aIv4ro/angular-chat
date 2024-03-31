@@ -3,7 +3,7 @@ import { RouterOutlet } from '@angular/router';
 import { Message, ServerConnectionState, SocketService } from './services/socket.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Subject, forkJoin, takeUntil } from 'rxjs';
+import { Subject, combineLatest, takeUntil } from 'rxjs';
 import { MessageComponent } from './components/message/message.component';
 import { LocalStorageService } from './services/local-storage.service';
 
@@ -34,7 +34,7 @@ export class AppComponent implements OnInit, OnDestroy {
       connectionState: this.socketService.connectionState,
       messages: this.socketService.messages
     }
-    forkJoin(obs)
+    combineLatest(obs)
       .pipe(takeUntil(this.ngUnsubscribe))
       .subscribe(({connectionState, messages}) => {
         this.connectionState = connectionState;
