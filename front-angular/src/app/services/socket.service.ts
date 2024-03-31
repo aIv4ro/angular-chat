@@ -17,7 +17,6 @@ export class SocketService {
   private readonly socket: Socket
   readonly connectionState = new BehaviorSubject<ServerConnectionState>('disconnected');
   readonly messages = new BehaviorSubject<Message[]>([]);
-  readonly username = new BehaviorSubject<string | null>(null);
 
   constructor(
     private readonly localStorageService: LocalStorageService
@@ -29,25 +28,19 @@ export class SocketService {
 
   private listenEvents() {
     this.socket.on('connect', () => {
-      console.log('initial connection')
-      this.connectionState.next('inital-connection');
+      this.connectionState.next('connected');
+      const auth = this.socket.auth as { username: string }
+      this.localStorageService.setConnection({ username: auth.username })
     });
     this.socket.on('disconnect', () => {
-      console.log('disconnected')
       this.socket.disconnect()
       this.resetState()
+      this.socket.auth = {}
     });
-    this.socket.on('joined', () => {
-      console.log('joined')
-      this.connectionState.next('connected');
-      this.localStorageService.setConnection({ username: this.username.value! })
-    })
     this.socket.on('old-messages', (messages: Message[]) => {
-      console.log(messages)
       this.messages.next(messages)
     })
     this.socket.on('message', (message: Message) => {
-      console.log('new message', message)
       this.messages.next([...this.messages.value, message])
     })
   }
@@ -62,7 +55,6 @@ export class SocketService {
   private resetState() {
     this.connectionState.next('disconnected');
     this.messages.next([]);
-    this.username.next(null);
   }
 
   connect({
@@ -71,16 +63,8 @@ export class SocketService {
     username: string;
   }) {
     if (!this.socket.connected) {
-      this.connectionState
-        .pipe(
-          filter(state => state !== 'inital-connection'),
-          take(1)
-        ).subscribe(() => {
-          console.log('joining')
-          this.socket.emit('join', { username });
-          this.username.next(username)
-        })
-      this.socket.connect(); 
+      this.socket.auth = { username };
+      this.socket.connect();
     }
   }
 
@@ -93,5 +77,10 @@ export class SocketService {
 
   sendMessage(message: string) {
     this.socket.emit('message', message);
+  }
+
+  getAuthUsername(): string {
+    const {username} = this.socket.auth as { username: string }
+    return username
   }
 }
