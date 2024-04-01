@@ -67,7 +67,6 @@ io.on('connection', (socket) => {
   })
 
   socket.on('upload', async (image: Buffer, text: string) => {
-    console.log('upload -> message ->', text, 'image ->', image)
     const user = getInMemoUsers().find((user) => user.id === socket.id)
     if (user != null) {
       const idForImage = randomUUID()

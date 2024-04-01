@@ -27,14 +27,15 @@ export class ChatFooterComponent implements OnInit {
     })
   }
 
-  sendMessage() {
+  sendMessage($event: SubmitEvent) {
     const obj = {
       message: this.message,
       image: this.image
     }
     this.socketService.sendMessage(obj);
+    const form = $event.target as HTMLFormElement;
+    form.reset();
     this.message = '';
-    this.image = null
   }
 }
 

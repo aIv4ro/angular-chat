@@ -1,4 +1,4 @@
-<form (submit)="sendMessage()" class="bg-neutral-700 p-2 flex flex-col gap-2">
+<form (submit)="sendMessage($event)" class="bg-neutral-700 p-2 flex flex-col gap-2">
   @if (image) {
     <img 
       [src]="image | toSrc" 
