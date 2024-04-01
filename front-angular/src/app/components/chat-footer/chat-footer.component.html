@@ -1,17 +1,46 @@
-<form (submit)="sendMessage()" class="flex bg-neutral-700 p-2 gap-2">
-  <textarea  
-    [(ngModel)]="message" 
-    name="message" 
-    placeholder="Type your message here"
-    class="resize-none w-full max-h-20 p-2 rounded bg-neutral-700 focus:outline-none border border-neutral-800"
-    required
-    #messageInput="ngModel"
-  >
-  </textarea>
-  <button 
-    class="bg-neutral-800 rounded max-h-full hover:text-blue-700 rounded-r-sm transition-colors p-2 disabled:pointer-events-none disabled:text-gray-500"
-    [disabled]="connectionState !== 'connected' || messageInput.invalid"
-  >
-    <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-send-2"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4.698 4.034l16.302 7.966l-16.302 7.966a.503 .503 0 0 1 -.546 -.124a.555 .555 0 0 1 -.12 -.568l2.468 -7.274l-2.468 -7.274a.555 .555 0 0 1 .12 -.568a.503 .503 0 0 1 .546 -.124z" /><path d="M6.5 12h14.5" /></svg>
-  </button>
+<form (submit)="sendMessage()" class="bg-neutral-700 p-2 flex flex-col gap-2">
+  @if (image) {
+    <img 
+      [src]="image | toSrc" 
+      alt="Image attached to the message" 
+      class="w-20 h-20 object-cover rounded"
+    />
+  }
+  <div class="flex gap-2">
+    <textarea  
+      [(ngModel)]="message" 
+      name="message" 
+      placeholder="Type your message here"
+      class="resize-none w-full max-h-20 p-2 rounded bg-neutral-700 focus:outline-none border border-neutral-800"
+      required
+      #messageInput="ngModel"
+    >
+    </textarea>
+    <label 
+      for="image"
+      class="flex p-3 bg-neutral-800 rounded max-h-full rounded-r-sm transition-colors"
+      [ngClass]="{
+        'pointer-events-none text-gray-500': connectionState !== 'connected',
+        'hover:text-blue-700 cursor-pointer': connectionState === 'connected'
+      }"
+    >
+      <input 
+        type="file" 
+        id="image" 
+        name="image" 
+        accept="image/*" 
+        class="hidden"
+        [(ngModel)]="image"
+        observeFiles
+        #imageInput="ngModel"
+      />
+      <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-paperclip"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M15 7l-6.5 6.5a1.5 1.5 0 0 0 3 3l6.5 -6.5a3 3 0 0 0 -6 -6l-6.5 6.5a4.5 4.5 0 0 0 9 9l6.5 -6.5" /></svg>
+    </label>
+    <button 
+      class="flex p-3 bg-neutral-800 rounded max-h-full hover:text-blue-700 rounded-r-sm transition-colors disabled:pointer-events-none disabled:text-gray-500"
+      [disabled]="connectionState !== 'connected' || messageInput.invalid"
+    >
+      <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-send-2"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4.698 4.034l16.302 7.966l-16.302 7.966a.503 .503 0 0 1 -.546 -.124a.555 .555 0 0 1 -.12 -.568l2.468 -7.274l-2.468 -7.274a.555 .555 0 0 1 .12 -.568a.503 .503 0 0 1 .546 -.124z" /><path d="M6.5 12h14.5" /></svg>
+    </button>
+  </div>
 </form>

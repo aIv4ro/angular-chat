@@ -75,8 +75,18 @@ export class SocketService {
     }
   }
 
-  sendMessage(message: string) {
-    this.socket.emit('message', message);
+  sendMessage({
+    message, 
+    image
+  }: {
+    message: string
+    image: File | null
+  }) {
+    if (image == null) {
+      this.socket.emit('message', message);
+    } else {
+      this.socket.emit('upload', image, message);
+    }
   }
 
   getAuthUsername(): string {
