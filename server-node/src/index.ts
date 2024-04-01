@@ -74,7 +74,7 @@ io.on('connection', (socket) => {
       const fileType = await fileTypeFromBuffer(image)
       if (fileType == null) return
       await writeFile(`./public/tmp/images/${idForImage}.${fileType.ext}`, image)
-      const message: Message = { from: user.data.username, text, image: idForImage }
+      const message: Message = { from: user.data.username, text, image: `${idForImage}.${fileType.ext}` }
       addMessage(message)
       getInMemoUsers()
         .forEach(({ socket }) => {

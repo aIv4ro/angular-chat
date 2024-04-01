@@ -8,6 +8,7 @@ export type ConnectionState = 'connected' | 'disconnected';
 export type Message = {
   from: string
   text: string
+  image?: string | null
 }
 
 @Injectable({
