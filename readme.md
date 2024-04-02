@@ -4,7 +4,7 @@
 ```
 git clone https://github.com/aIv4ro/angular-chat.git
 
-cd server-node
+cd angular-chat/server-node
 pnpm install
 pnpm run dev
 
