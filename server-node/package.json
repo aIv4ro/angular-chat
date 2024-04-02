@@ -8,7 +8,8 @@
     "tsc": "tsc",
     "build": "npm run tsc",
     "start": "npm run build && node ./build/index.js",
-    "dev": "tsnd --clear --respawn ./src/index.ts"
+    "dev": "tsnd --clear --respawn ./src/index.ts",
+    "clear": "node ./scripts/clear.mjs"
   },
   "author": "Alvaro",
   "license": "ISC",
