@@ -27,13 +27,12 @@
     >
     </textarea>
     <button 
-      class="flex p-3 rounded h-fit hover:text-blue-700 rounded-r-sm transition-colors disabled:pointer-events-none disabled:text-gray-500"
+      class="flex p-3 bg-neutral-800 rounded h-fit hover:text-red-400 rounded-r-sm transition-colors disabled:pointer-events-none disabled:text-gray-500 relative after:absolute after:block after:size-3 after:top-2 after:right-2 after:rounded-full after:border-2 after:border-red-400 after:transition-colors"
       [disabled]="connectionState !== 'connected'"
       type="button"
       (click)="toggleAudioRecording()"
       [ngClass]="{
-        'bg-red-500': recordingState === 'recording',
-        'bg-neutral-800': recordingState === 'stopped'
+        'after:bg-red-400': recordingState === 'recording',
       }"
     >
       <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-microphone"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 2m0 3a3 3 0 0 1 3 -3h0a3 3 0 0 1 3 3v5a3 3 0 0 1 -3 3h0a3 3 0 0 1 -3 -3z" /><path d="M5 10a7 7 0 0 0 14 0" /><path d="M8 21l8 0" /><path d="M12 17l0 4" /></svg>    

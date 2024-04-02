@@ -9,6 +9,7 @@ export type Message = {
   from: string
   text: string
   image?: string | null
+  audio?: string | null
 }
 
 @Injectable({
@@ -78,15 +79,21 @@ export class SocketService {
 
   sendMessage({
     message, 
-    image
+    image,
+    audio
   }: {
     message: string
-    image: File | null
+    image: File | null,
+    audio: File | null
   }) {
-    if (image == null) {
+    if (image == null && audio == null) {
       this.socket.emit('message', message);
     } else {
-      this.socket.emit('upload', image, message);
+      this.socket.emit('upload', {
+        image,
+        audio,
+        text: message
+      });
     }
   }
 

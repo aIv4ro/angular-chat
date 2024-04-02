@@ -36,7 +36,6 @@ export class ChatFooterComponent implements OnInit, OnDestroy {
     ]).pipe(
       takeUntil(this.ngUnsubscribe)
     ).subscribe(([connectionState, recordingState, audio]) => {
-      console.log(recordingState)
       this.connectionState = connectionState;
       this.recordingState = recordingState;
       this.audio = audio;
@@ -51,8 +50,10 @@ export class ChatFooterComponent implements OnInit, OnDestroy {
   sendMessage($event: SubmitEvent) {
     const obj = {
       message: this.message,
-      image: this.image
+      image: this.image,
+      audio: this.audio == null ? null : new File([this.audio], 'audio')
     }
+    console.log(obj)
     this.socketService.sendMessage(obj);
     const form = $event.target as HTMLFormElement;
     form.reset();

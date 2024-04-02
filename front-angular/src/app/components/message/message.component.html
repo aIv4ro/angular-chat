@@ -26,9 +26,18 @@
       @if (message.image != null) {
         <img
           class="rounded"
-          src="http://localhost:8080/public/tmp/images/{{ message.image }}"
+          src="http://localhost:8080/public/tmp/image/{{ message.image }}"
           alt="Image"
         />
+      }
+      @if (message.audio != null) {
+        <audio 
+          src="http://localhost:8080/public/tmp/video/{{ message.audio }}" 
+          controls 
+        >
+          Your browser does not support the
+          <code>audio</code> element.
+        </audio>
       }
       <p>
         {{ message.text }}

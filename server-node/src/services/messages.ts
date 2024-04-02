@@ -2,6 +2,7 @@ export interface Message {
   from: 'server' | string
   text: string
   image: string | null
+  audio: string | null
 }
 
 const inMemoMessages: Message[] = []
