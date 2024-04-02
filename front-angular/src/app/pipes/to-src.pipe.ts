@@ -5,7 +5,7 @@ import { Pipe, PipeTransform } from '@angular/core';
   standalone: true
 })
 export class ToSrcPipe implements PipeTransform {
-  transform(value: File): string {
+  transform(value: File | Blob): string {
     return URL.createObjectURL(value);
   }
 }

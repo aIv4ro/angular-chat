@@ -1,9 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ServerConnectionState, SocketService } from '../../services/socket.service';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { FileInputValueAccessor } from '../../directives/file-input-value-accessor.directive';
 import { ToSrcPipe } from "../../pipes/to-src.pipe";
+import { AudioRecorderService } from '../../services/audio-recorder.service';
+import { Subject, combineLatest, takeUntil } from 'rxjs';
 
 @Component({
     selector: 'chat-footer',
@@ -12,19 +14,38 @@ import { ToSrcPipe } from "../../pipes/to-src.pipe";
     styles: `textarea {field-sizing: content;}`,
     imports: [FormsModule, CommonModule, FileInputValueAccessor, ToSrcPipe]
 })
-export class ChatFooterComponent implements OnInit {
+export class ChatFooterComponent implements OnInit, OnDestroy {
   connectionState: ServerConnectionState = 'disconnected';
+  recordingState: 'recording' | 'stopped' = 'stopped';
   message: string = '';
   image: File | null = null;
+  audio: Blob | null = null;
+
+  private readonly ngUnsubscribe = new Subject<void>();
 
   constructor (
-    private readonly socketService: SocketService
+    private readonly socketService: SocketService,
+    private readonly audioRecorderService: AudioRecorderService
   ) {}
 
   ngOnInit() {
-    this.socketService.connectionState.subscribe(connectionState => {
+    combineLatest([
+      this.socketService.connectionState,
+      this.audioRecorderService.state,
+      this.audioRecorderService.audio
+    ]).pipe(
+      takeUntil(this.ngUnsubscribe)
+    ).subscribe(([connectionState, recordingState, audio]) => {
+      console.log(recordingState)
       this.connectionState = connectionState;
+      this.recordingState = recordingState;
+      this.audio = audio;
     })
+  }
+
+  ngOnDestroy() {
+    this.ngUnsubscribe.next();
+    this.ngUnsubscribe.complete();
   }
 
   sendMessage($event: SubmitEvent) {
@@ -36,6 +57,14 @@ export class ChatFooterComponent implements OnInit {
     const form = $event.target as HTMLFormElement;
     form.reset();
     this.message = '';
+  }
+
+  toggleAudioRecording() {
+    if (this.audioRecorderService.state.value === 'stopped') {
+      this.audioRecorderService.start();
+    } else {
+      this.audioRecorderService.stop();
+    }
   }
 }
 
