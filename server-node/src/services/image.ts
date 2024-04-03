@@ -1,6 +1,7 @@
 import { randomUUID } from 'crypto'
 import { writeFile } from 'fs/promises'
 
+// eslint-disable-next-line @typescript-eslint/consistent-type-imports
 type FileFromTypeBufferReturn = Promise<ReturnType<Awaited<typeof import('file-type')>['fromBuffer']>>
 const fileTypeFromBuffer = async (buffer: Buffer): FileFromTypeBufferReturn => {
   const { fromBuffer } = await import('file-type')

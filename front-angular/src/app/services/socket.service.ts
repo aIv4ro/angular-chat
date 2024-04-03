@@ -1,11 +1,12 @@
-import { Injectable, OnDestroy, OnInit } from '@angular/core';
-import {Socket, io} from 'socket.io-client';
-import { BehaviorSubject } from 'rxjs';
-import { LocalStorageService } from './local-storage.service';
+import { Injectable } from '@angular/core'
+import { type Socket, io } from 'socket.io-client'
+import { BehaviorSubject } from 'rxjs'
+// eslint-disable-next-line @typescript-eslint/consistent-type-imports
+import { LocalStorageService } from './local-storage.service'
 
-export type ServerConnectionState = 'inital-connection' | 'connected' | 'disconnected';
-export type ConnectionState = 'connected' | 'disconnected';
-export type Message = {
+export type ServerConnectionState = 'inital-connection' | 'connected' | 'disconnected'
+export type ConnectionState = 'connected' | 'disconnected'
+export interface Message {
   from: string
   text: string
   image?: string | null
@@ -17,28 +18,28 @@ export type Message = {
 })
 export class SocketService {
   private readonly socket: Socket
-  readonly connectionState = new BehaviorSubject<ServerConnectionState>('disconnected');
-  readonly messages = new BehaviorSubject<Message[]>([]);
+  readonly connectionState = new BehaviorSubject<ServerConnectionState>('disconnected')
+  readonly messages = new BehaviorSubject<Message[]>([])
 
-  constructor(
+  constructor (
     private readonly localStorageService: LocalStorageService
-  ) { 
-    this.socket = io("ws://localhost:8080/", { autoConnect: false, });
+  ) {
+    this.socket = io('ws://localhost:8080/', { autoConnect: false })
     this.listenEvents()
     this.init()
   }
 
-  private listenEvents() {
+  private listenEvents (): void {
     this.socket.on('connect', () => {
-      this.connectionState.next('connected');
+      this.connectionState.next('connected')
       const auth = this.socket.auth as { username: string }
       this.localStorageService.setConnection({ username: auth.username })
-    });
+    })
     this.socket.on('disconnect', () => {
       this.socket.disconnect()
       this.resetState()
       this.socket.auth = {}
-    });
+    })
     this.socket.on('old-messages', (messages: Message[]) => {
       this.messages.next(messages)
     })
@@ -47,58 +48,58 @@ export class SocketService {
     })
   }
 
-  private init () {
-    const connection = this.localStorageService.getConnection();
+  private init (): void {
+    const connection = this.localStorageService.getConnection()
     if (connection != null) {
       this.connect(connection)
     }
   }
 
-  private resetState() {
-    this.connectionState.next('disconnected');
-    this.messages.next([]);
+  private resetState (): void {
+    this.connectionState.next('disconnected')
+    this.messages.next([])
   }
 
-  connect({
+  connect ({
     username
   }: {
-    username: string;
-  }) {
+    username: string
+  }): void {
     if (!this.socket.connected) {
-      this.socket.auth = { username };
-      this.socket.connect();
+      this.socket.auth = { username }
+      this.socket.connect()
     }
   }
 
-  disconnect() {
+  disconnect (): void {
     if (this.socket.connected) {
       this.localStorageService.setConnection(null)
-      this.socket.disconnect();
+      this.socket.disconnect()
     }
   }
 
-  sendMessage({
-    message, 
+  sendMessage ({
+    message,
     image,
     audio
   }: {
     message: string
-    image: File | null,
+    image: File | null
     audio: File | null
-  }) {
+  }): void {
     if (image == null && audio == null) {
-      this.socket.emit('message', message);
+      this.socket.emit('message', message)
     } else {
       this.socket.emit('upload', {
         image,
         audio,
         text: message
-      });
+      })
     }
   }
 
-  getAuthUsername(): string {
-    const {username} = this.socket.auth as { username: string }
+  getAuthUsername (): string {
+    const { username } = this.socket.auth as { username: string }
     return username
   }
 }

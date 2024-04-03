@@ -1,5 +1,5 @@
-import { CommonModule } from '@angular/common';
-import { Component, Input } from '@angular/core';
+import { CommonModule } from '@angular/common'
+import { Component, Input } from '@angular/core'
 
 @Component({
   selector: 'app-tail',
@@ -9,5 +9,5 @@ import { Component, Input } from '@angular/core';
   styleUrl: './tail.component.css'
 })
 export class TailComponent {
-  @Input() dir: 'in' | 'out' = 'in';
+  @Input() dir: 'in' | 'out' = 'in'
 }
