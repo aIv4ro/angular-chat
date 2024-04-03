@@ -1,8 +1,6 @@
 import { Component, type OnDestroy, type OnInit } from '@angular/core'
-// eslint-disable-next-line @typescript-eslint/consistent-type-imports
 import { type ServerConnectionState, SocketService } from '../../services/socket.service'
 import { FormsModule } from '@angular/forms'
-// eslint-disable-next-line @typescript-eslint/consistent-type-imports
 import { LocalStorageService } from '../../services/local-storage.service'
 import { Subject, takeUntil } from 'rxjs'
 

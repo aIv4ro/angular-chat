@@ -1,5 +1,4 @@
 import { Component, Input } from '@angular/core'
-// eslint-disable-next-line @typescript-eslint/consistent-type-imports
 import { type Message, SocketService } from '../../services/socket.service'
 import { CommonModule } from '@angular/common'
 import { TailComponent } from '../tail/tail.component'

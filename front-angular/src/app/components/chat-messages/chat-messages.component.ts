@@ -1,6 +1,5 @@
 import { Component, type OnDestroy, type OnInit } from '@angular/core'
 import { Subject, combineLatest, takeUntil } from 'rxjs'
-// eslint-disable-next-line @typescript-eslint/consistent-type-imports
 import { type Message, type ServerConnectionState, SocketService } from '../../services/socket.service'
 import { MessageComponent } from '../message/message.component'
 

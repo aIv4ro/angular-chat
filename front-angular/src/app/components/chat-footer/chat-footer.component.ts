@@ -1,11 +1,9 @@
 import { Component, type OnDestroy, type OnInit } from '@angular/core'
-// eslint-disable-next-line @typescript-eslint/consistent-type-imports
 import { type ServerConnectionState, SocketService } from '../../services/socket.service'
 import { FormsModule } from '@angular/forms'
 import { CommonModule } from '@angular/common'
 import { FileInputValueAccessor } from '../../directives/file-input-value-accessor.directive'
 import { ToSrcPipe } from '../../pipes/to-src.pipe'
-// eslint-disable-next-line @typescript-eslint/consistent-type-imports
 import { AudioRecorderService } from '../../services/audio-recorder.service'
 import { Subject, combineLatest, takeUntil } from 'rxjs'
 

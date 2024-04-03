@@ -1,5 +1,4 @@
 import { type ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms'
-// eslint-disable-next-line @typescript-eslint/consistent-type-imports
 import { Directive, ElementRef } from '@angular/core'
 
 const noop: CallbackFn = () => {

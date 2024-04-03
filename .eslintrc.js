@@ -6,7 +6,10 @@ module.exports = {
         '*.js',
         '*.mjs'
       ],
-      extends: 'love'
+      extends: 'love',
+      rules: {
+        '@typescript-eslint/consistent-type-imports': 0
+      }
     }
   ],
   parserOptions: {
@@ -16,8 +19,5 @@ module.exports = {
     'node_modules/',
     'dist/',
     'build/'
-  ],
-  rules: {
-    '@typescript-eslint/consistent-type-imports': 0
-  }
+  ]
 }

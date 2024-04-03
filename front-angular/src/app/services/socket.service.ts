@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core'
 import { type Socket, io } from 'socket.io-client'
 import { BehaviorSubject } from 'rxjs'
-// eslint-disable-next-line @typescript-eslint/consistent-type-imports
 import { LocalStorageService } from './local-storage.service'
 
 export type ServerConnectionState = 'inital-connection' | 'connected' | 'disconnected'

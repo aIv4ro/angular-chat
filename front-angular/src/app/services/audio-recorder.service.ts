@@ -1,4 +1,3 @@
-// eslint-disable-next-line @typescript-eslint/consistent-type-imports
 import { Injectable, NgZone } from '@angular/core'
 import { BehaviorSubject } from 'rxjs'
 
